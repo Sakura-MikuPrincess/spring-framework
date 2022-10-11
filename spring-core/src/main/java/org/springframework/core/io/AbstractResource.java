@@ -51,10 +51,13 @@ public abstract class AbstractResource implements Resource {
 	 * This implementation checks whether a File can be opened,
 	 * falling back to whether an InputStream can be opened.
 	 * This will cover both directories and content resources.
+	 *
+	 * 判断文件是否存在，若判断过程产生异常（因为会调用SecurityManager来判断），就关闭对应的流
 	 */
 	@Override
 	public boolean exists() {
 		// Try file existence: can we find the file in the file system?
+		// 基于 File 进行判断
 		if (isFile()) {
 			try {
 				return getFile().exists();
@@ -67,6 +70,7 @@ public abstract class AbstractResource implements Resource {
 			}
 		}
 		// Fall back to stream existence: can we open the stream?
+		// 基于 InputStream 进行判断
 		try {
 			getInputStream().close();
 			return true;
